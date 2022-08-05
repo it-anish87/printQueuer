@@ -1,4 +1,4 @@
-import PrintData from "../Interfaces/PrintData";
+import PrintData from "./PrintData";
 
 export default class Printer {
     id: number | string;
@@ -11,11 +11,11 @@ export default class Printer {
     print(printData: PrintData){
         this.available = false;
         console.log(printData.clientId, printData.data);
-        setTimeout(function(that){
+        setTimeout(function(that: { available: boolean; }){
             that.available = true;
         },1000, this);
     }
-    isAvailable(){
+    private isAvailable(): boolean{
         return this.available;
     }
 }

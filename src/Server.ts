@@ -1,11 +1,11 @@
-import PrintData from '../Interfaces/PrintData'
+import PrintData from './PrintData'
 import Printer from './Printer';
 
 export default class Server {
-    id: number | string;
-    queue: Array<PrintData> //PrintData[]
+    private id: number | string;
+    private queue: Array<PrintData> //PrintData[]
     private printer: Printer;
-    private intervalId: number; //for setInterval
+    private intervalId: number | undefined; //for setInterval
     private pendingStop: boolean //flag 
 
     constructor(printerInstance: Printer){
@@ -15,13 +15,13 @@ export default class Server {
         this.pendingStop = false;
     }
     init(){
-        this.intervalId = setInterval(function(that){
+        this.intervalId = setInterval(function(that: { printer: { isAvailable: () => any; }; deQueue: () => void; }){
             if(that.printer.isAvailable()){
                 that.deQueue();
             }
         },1000, this)
     }
-    stop(){
+    private stop(){
             if(this.queue.length == 0){
                 clearInterval(this.intervalId);
             }else{
@@ -29,10 +29,10 @@ export default class Server {
             }
             
     }
-    addQueue(printData: PrintData){
+    addQueue(printData: PrintData): void{
         this.queue.push(printData);   
     }
-    deQueue(){
+    private deQueue(): void{
         console.log(this.queue);
         const printData: PrintData | undefined = this.queue.shift();
         if(printData){
